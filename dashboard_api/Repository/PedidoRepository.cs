@@ -38,7 +38,7 @@ namespace dashboard_api.Repository
                 string query = @"SELECT COUNT(1) AS registros, CEILING(CAST(COUNT(1) AS DECIMAL)/50) AS paginas FROM Pedidos; ";
                 var contadores = await conn.QueryAsync(sql: query);
 
-                query =        @"DECLARE @QtdPorPagina INT = 50,
+                query =        @"DECLARE @QtdPorPagina INT = 20,
                                          @pagina INT = @page;
                                  SELECT Pedidos.id, Pedidos.data_criacao, Pedidos.data_entrega, Pedidos.endereco
                                  FROM Pedidos
