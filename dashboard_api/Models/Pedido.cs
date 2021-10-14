@@ -7,6 +7,7 @@ namespace dashboard_api
 {
     public class Pedido
     {
+        [Key]
         public int id { get; set; }
 
         [Display(Name = "Data")]
@@ -15,7 +16,10 @@ namespace dashboard_api
         public DateTime data_criacao { get; set; }
         public DateTime data_entrega { get; set; }
         public string endereco { get; set; }
+        public string nome { get; set; }
+        public string veiculo { get; set; }
+        public string placa { get; set; }
 
-        public List<Produto> produtos { get; set; }
+        public List<dynamic> produtos { get; set; }
     }
 }

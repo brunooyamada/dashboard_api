@@ -1,4 +1,5 @@
 ﻿using Dapper;
+using dashboard_api.Models;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -26,16 +27,50 @@ namespace dashboard_api.Repository
             }
         }
 
-        public async Task<List<Pedido>> GetPedido()
+        public async Task<dynamic> GetPedido(int? pagina=1)
         {
-            using(var conn = _db.Connection)
+            if (pagina == 0 || pagina is null) {
+                pagina = 1;
+            }
+
+            using (var conn = _db.Connection)
             {
-                string query = @"SELECT Pedidos.id, Pedidos.data_criacao, Pedidos.data_entrega, Pedidos.endereco, Produtos.id, Produtos.nome, Produtos.descricao, Produtos.valor
-                                 FROM Pedidos 
-                                 INNER JOIN Pedidos_Produtos ON Pedidos.id = Pedidos_Produtos.id_pedido
-                                 INNER JOIN Produtos ON Produtos.id = Pedidos_Produtos.id_produto;";
-                List<Pedido> pedidos = (await conn.QueryAsync<Pedido>(sql: query)).ToList();
-                return pedidos;
+                string query = @"SELECT COUNT(1) AS registros, CEILING(CAST(COUNT(1) AS DECIMAL)/50) AS paginas FROM Pedidos; ";
+                var contadores = await conn.QueryAsync(sql: query);
+
+                query =        @"DECLARE @QtdPorPagina INT = 50,
+                                         @pagina INT = @page;
+                                 SELECT Pedidos.id, Pedidos.data_criacao, Pedidos.data_entrega, Pedidos.endereco
+                                 FROM Pedidos
+                                 ORDER BY Pedidos.data_criacao ASC 
+
+                                 OFFSET (@pagina - 1) * @QtdPorPagina ROWS 
+								 FETCH NEXT @QtdPorPagina ROWS ONLY; ";
+                var param = new DynamicParameters();
+                param.Add("@page", pagina, DbType.Int32, ParameterDirection.Input);
+
+                var pedidos = await conn.QueryAsync<dynamic>(sql: query, param: param);
+
+                query = @"SELECT Produtos.id, Produtos.nome, Produtos.descricao, Produtos.valor
+                          FROM Pedidos_Produtos
+                          INNER JOIN Produtos ON Produtos.id = Pedidos_Produtos.id_produto
+                          WHERE Pedidos_Produtos.id_pedido = @id_pedido; ";
+
+                foreach (var pedido in pedidos)
+                {
+                    param = new DynamicParameters();
+                    param.Add("@id_pedido", pedido.id, DbType.String, ParameterDirection.Input);
+
+                    var produtos = await conn.QueryAsync<dynamic>(sql: query, param: param);
+                    pedido.produtos = produtos;
+                }
+
+                var resultado = new List<dynamic>();
+                var qtdPaginas = contadores.FirstOrDefault().paginas;
+                resultado.Add(new { registros = contadores.FirstOrDefault().registros, paginas = qtdPaginas });
+                resultado.Add(new { pedidos = pedidos });
+
+                return resultado;
             }
         }
 
@@ -46,6 +81,29 @@ namespace dashboard_api.Repository
                 string query = "SELECT id, data_criacao, data_entrega, endereco FROM Pedidos WHERE id = @id";
                 var pedido = await conn.QueryFirstOrDefaultAsync<Pedido>
                     (sql: query, param: new { id });
+
+                query = @"SELECT Produtos.id, Produtos.nome, Produtos.descricao, Produtos.valor
+                          FROM Pedidos_Produtos
+                          INNER JOIN Produtos ON Produtos.id = Pedidos_Produtos.id_produto
+                          WHERE Pedidos_Produtos.id_pedido = @id_pedido; ";
+
+                var param = new DynamicParameters();
+                param.Add("@id_pedido", pedido.id, DbType.String, ParameterDirection.Input);
+
+                pedido.produtos = new List<dynamic>();
+
+                var produtos = await conn.QueryAsync<dynamic>(sql: query, param: param);
+                foreach(var produto in produtos)
+                {
+                    var prod = new Produto();
+                    prod.id = produto.id;
+                    prod.nome = produto.nome;
+                    prod.descricao = produto.descricao;                    
+                    prod.valor = produto.valor;
+
+                    pedido.produtos.Add(prod);
+                }
+                
                 return pedido;
             }
         }
@@ -92,7 +150,10 @@ namespace dashboard_api.Repository
             using (var conn = _db.Connection)
             {
                 string command = @"UPDATE Pedidos 
-                                   SET data_entrega = @data_entrega 
+                                   SET nome = @nome,
+                                       veiculo = @veiculo,
+                                       placa = @placa,
+                                       data_entrega = @data_entrega 
                                    WHERE id = @id";
                 var result = await conn.ExecuteAsync(sql: command, param: pedido);
                 return result;
