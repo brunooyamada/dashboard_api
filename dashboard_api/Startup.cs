@@ -17,6 +17,8 @@ namespace dashboard_api
 {
     public class Startup
     {
+        readonly string minhaPolitica = "_minhaPolitica";
+
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -27,6 +29,17 @@ namespace dashboard_api
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddCors(options =>
+            {
+                options.AddPolicy(name: minhaPolitica,
+                    builder =>
+                    {
+                        builder.WithOrigins("*")
+                               .AllowAnyHeader()
+                               .AllowAnyMethod();
+                    });
+            });
+
             services.AddControllers();
 
             services.AddScoped<DbSession>();
@@ -44,6 +57,8 @@ namespace dashboard_api
             app.UseHttpsRedirection();
 
             app.UseRouting();
+
+            app.UseCors(minhaPolitica);
 
             app.UseAuthorization();
 
