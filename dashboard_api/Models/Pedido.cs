@@ -20,6 +20,6 @@ namespace dashboard_api
         public string veiculo { get; set; }
         public string placa { get; set; }
 
-        public List<dynamic> produtos { get; set; }
+        public List<Produto> produtos { get; set; }
     }
 }

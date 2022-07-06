@@ -79,8 +79,13 @@ namespace dashboard_api.Repository
             using (var conn = _db.Connection)
             {
                 string query = "SELECT id, data_criacao, data_entrega, endereco FROM Pedidos WHERE id = @id";
-                var pedido = await conn.QueryFirstOrDefaultAsync<Pedido>
+                Pedido pedido = await conn.QueryFirstOrDefaultAsync<Pedido>
                     (sql: query, param: new { id });
+
+                if (pedido == null)
+                {
+                    return null;
+                }
 
                 query = @"SELECT Produtos.id, Produtos.nome, Produtos.descricao, Produtos.valor
                           FROM Pedidos_Produtos
@@ -90,7 +95,7 @@ namespace dashboard_api.Repository
                 var param = new DynamicParameters();
                 param.Add("@id_pedido", pedido.id, DbType.String, ParameterDirection.Input);
 
-                pedido.produtos = new List<dynamic>();
+                pedido.produtos = new List<Produto>();
 
                 var produtos = await conn.QueryAsync<dynamic>(sql: query, param: param);
                 foreach(var produto in produtos)

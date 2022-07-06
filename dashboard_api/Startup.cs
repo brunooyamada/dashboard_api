@@ -12,6 +12,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
+using System.Reflection;
+using System.IO;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
+using Microsoft.OpenApi.Models;
 
 namespace dashboard_api
 {
@@ -29,6 +35,7 @@ namespace dashboard_api
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            // Cors
             services.AddCors(options =>
             {
                 options.AddPolicy(name: minhaPolitica,
@@ -39,6 +46,23 @@ namespace dashboard_api
                                .AllowAnyMethod();
                     });
             });
+            // fim
+
+            
+            // Swagger
+            services.AddSwaggerGen(options =>
+            {
+                options.SwaggerDoc(
+                    "v1",
+                    new Microsoft.OpenApi.Models.OpenApiInfo
+                    {
+                        Title = "Dashboard API.",
+                        Version = "v1",
+                        Description = "Bem vindo à API do Dashboard"
+                    }
+                );
+            });
+            // fim
 
             services.AddControllers();
 
@@ -58,6 +82,8 @@ namespace dashboard_api
 
             app.UseRouting();
 
+            app.UseAuthentication();
+
             app.UseCors(minhaPolitica);
 
             app.UseAuthorization();
@@ -66,6 +92,15 @@ namespace dashboard_api
             {
                 endpoints.MapControllers();
             });
+
+            // Swagger
+            app.UseSwagger();
+            app.UseSwaggerUI(opt =>
+            {
+                opt.RoutePrefix = string.Empty;
+                opt.SwaggerEndpoint("/swagger/v1/swagger.json", "Dashboard API");
+            });
+            // fim
         }
     }
 }

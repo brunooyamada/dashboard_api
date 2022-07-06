@@ -1,27 +1,21 @@
 {
   "format": 1,
   "restore": {
-    "F:\\projetos\\dashboard_api\\dashboard_api\\dashboard_api.csproj": {}
+    "C:\\repositorios\\dashboard_api\\dashboard_api\\dashboard_api.csproj": {}
   },
   "projects": {
-    "F:\\projetos\\dashboard_api\\dashboard_api\\dashboard_api.csproj": {
+    "C:\\repositorios\\dashboard_api\\dashboard_api\\dashboard_api.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "F:\\projetos\\dashboard_api\\dashboard_api\\dashboard_api.csproj",
+        "projectUniqueName": "C:\\repositorios\\dashboard_api\\dashboard_api\\dashboard_api.csproj",
         "projectName": "dashboard_api",
-        "projectPath": "F:\\projetos\\dashboard_api\\dashboard_api\\dashboard_api.csproj",
-        "packagesPath": "C:\\Users\\Bruno\\.nuget\\packages\\",
-        "outputPath": "F:\\projetos\\dashboard_api\\dashboard_api\\obj\\",
+        "projectPath": "C:\\repositorios\\dashboard_api\\dashboard_api\\dashboard_api.csproj",
+        "packagesPath": "C:\\Users\\brunooyamada\\.nuget\\packages\\",
+        "outputPath": "C:\\repositorios\\dashboard_api\\dashboard_api\\obj\\",
         "projectStyle": "PackageReference",
-        "fallbackFolders": [
-          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages",
-          "C:\\Program Files (x86)\\Microsoft\\Xamarin\\NuGet\\"
-        ],
         "configFilePaths": [
-          "C:\\Users\\Bruno\\AppData\\Roaming\\NuGet\\NuGet.Config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Xamarin.Offline.config"
+          "C:\\Users\\brunooyamada\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
           "netcoreapp3.1"
@@ -50,6 +44,10 @@
               "target": "Package",
               "version": "[2.0.90, )"
             },
+            "Microsoft.AspNetCore.Authentication.JwtBearer": {
+              "target": "Package",
+              "version": "[3.1.26, )"
+            },
             "MySQLConnection": {
               "target": "Package",
               "version": "[1.0.1, )"
@@ -69,6 +67,18 @@
             "Swashbuckle.AspNetCore": {
               "target": "Package",
               "version": "[6.2.2, )"
+            },
+            "Swashbuckle.AspNetCore.Swagger": {
+              "target": "Package",
+              "version": "[6.3.1, )"
+            },
+            "Swashbuckle.AspNetCore.SwaggerGen": {
+              "target": "Package",
+              "version": "[6.3.1, )"
+            },
+            "Swashbuckle.AspNetCore.SwaggerUI": {
+              "target": "Package",
+              "version": "[6.3.1, )"
             },
             "System.Data.SqlClient": {
               "target": "Package",
@@ -93,7 +103,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.401\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.102\\RuntimeIdentifierGraph.json"
         }
       }
     }
